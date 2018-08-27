@@ -123,6 +123,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
         }
         View convertView = View.inflate(mActivity, R.layout.item_photoview, null);
         View rootView = mActivity.findViewById(R.id.rootView);
+        rootView.setBackground(mActivity.getResources().getDrawable(ImagePreview.getInstance().getBackgroundcolor()));
         final ProgressBar progressBar = convertView.findViewById(R.id.progress_view);
         final SubsamplingScaleImageView imageView = new SubsamplingScaleImageView(mActivity);
         //设置拖拽
@@ -266,6 +267,8 @@ public class ImagePreviewAdapter extends PagerAdapter {
 
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            //todo 添加失败图片
+                            progressBar.setVisibility(View.GONE);
                             super.onLoadFailed(errorDrawable);
                         }
 

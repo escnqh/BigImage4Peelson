@@ -53,24 +53,8 @@ public class MainActivity extends AppCompatActivity {
             imageInfo = null;
         }
 
-        // 仅加载普清
-        findViewById(R.id.buttonThumb).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImagePreview
-                        .getInstance()
-                        .setContext(MainActivity.this)
-                        .setImageInfoList(imageInfoList)
-                        .setShowDownButton(true)
-                        .setLoadStrategy(ImagePreview.LoadStrategy.AlwaysThumb)
-                        .setFolderName("BigImageViewDownload")
-                        .setScaleLevel(0.5f, 3, 8)
-                        .setZoomTransitionDuration(300)
-                        .start();
-            }
-        });
 
-        // 仅加载原图
+
         findViewById(R.id.buttonOrigin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,39 +62,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 手动模式：默认普清，手动高清
-        findViewById(R.id.buttonDefault).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImagePreview
-                        .getInstance()
-                        .setContext(MainActivity.this)
-                        .setImageInfoList(imageInfoList)
-                        .setShowDownButton(true)
-                        .setLoadStrategy(ImagePreview.LoadStrategy.Default)
-                        .setFolderName("BigImageViewDownload")
-                        .setScaleLevel(1, 3, 8)
-                        .setZoomTransitionDuration(500)
-                        .start();
-            }
-        });
 
-        // 网络自适应（WiFi原图，流量普清）
-        findViewById(R.id.buttonAuto).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImagePreview
-                        .getInstance()
-                        .setContext(MainActivity.this)
-                        .setImageInfoList(imageInfoList)
-                        .setShowDownButton(true)
-                        .setLoadStrategy(ImagePreview.LoadStrategy.NetworkAuto)
-                        .setFolderName("BigImageViewDownload")
-                        .setScaleLevel(1, 3, 5)
-                        .setZoomTransitionDuration(300)
-                        .start();
-            }
-        });
+
 
         findViewById(R.id.buttonClean).setOnClickListener(new View.OnClickListener() {
             @Override

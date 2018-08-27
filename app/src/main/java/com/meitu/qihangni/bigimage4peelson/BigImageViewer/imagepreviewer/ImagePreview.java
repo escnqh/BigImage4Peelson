@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.bean.ImageInfo;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.view.ImagePreviewActivity;
+import com.meitu.qihangni.bigimage4peelson.R;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class ImagePreview {
     private int zoomTransitionDuration = 200;// 动画持续时间 单位毫秒 ms
     private boolean isDragable = false;
     private boolean isClickToExit = false;
+    private int backgroundcolor = R.color.blackbackground;
 
     private LoadStrategy loadStrategy = LoadStrategy.Default;// 加载策略
 
@@ -71,6 +73,15 @@ public class ImagePreview {
     public ImagePreview setImageInfoList(@NonNull List<ImageInfo> imageInfoList) {
         this.imageInfoList = imageInfoList;
         return this;
+    }
+
+    public ImagePreview setBackgroundColor(int backgroundcolor) {
+        this.backgroundcolor = backgroundcolor;
+        return this;
+    }
+
+    public int getBackgroundcolor() {
+        return backgroundcolor;
     }
 
     public int getIndex() {
