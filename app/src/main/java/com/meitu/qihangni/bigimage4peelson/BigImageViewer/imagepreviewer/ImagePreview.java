@@ -32,6 +32,10 @@ public class ImagePreview {
     private boolean isDragable = false;
     private boolean isClickToExit = false;
     private int backgroundcolor = R.color.blackbackground;
+    private int locationX = 0;
+    private int locationY = 0;
+    private int resourceHeight = 0;
+    private int resourceWidth = 0;
 
     private LoadStrategy loadStrategy = LoadStrategy.Default;// 加载策略
 
@@ -64,6 +68,34 @@ public class ImagePreview {
     public ImagePreview setContext(@NonNull Context context) {
         this.context = context;
         return this;
+    }
+
+    public ImagePreview setResourceSize(int resourceHeight, int resourceWidth) {
+        this.resourceHeight = resourceHeight;
+        this.resourceWidth = resourceWidth;
+        return this;
+    }
+
+    public ImagePreview setResourceLocation(int locationX, int locationY) {
+        this.locationX = locationX;
+        this.locationY = locationY;
+        return this;
+    }
+
+    public int getLocationX() {
+        return locationX;
+    }
+
+    public int getLocationY() {
+        return locationY;
+    }
+
+    public int getResourceHeight() {
+        return resourceHeight;
+    }
+
+    public int getResourceWidth() {
+        return resourceWidth;
     }
 
     public List<ImageInfo> getImageInfoList() {

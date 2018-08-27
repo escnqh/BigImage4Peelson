@@ -1,12 +1,10 @@
 package com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.view;
 
-import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.drag.DragContract;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.drag.DragDirection;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.drag.DragHelper;
-import com.meitu.qihangni.bigimage4peelson.BigImageViewer.drag.effect.DragToExit;
+import com.meitu.qihangni.bigimage4peelson.BigImageViewer.drag.effect.DragImageToExit;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.ImagePreview;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.bean.ImageInfo;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.glide.ImageLoader;
@@ -152,8 +150,8 @@ public class ImagePreviewAdapter extends PagerAdapter {
                         return false;
                     }
                 })
-                .addDragDirection(DragDirection.DOWN, new DragToExit(imageView, null, DragDirection.DOWN, rootView))
-                .addDragDirection(DragDirection.UP, new DragToExit(imageView, null, DragDirection.DOWN, rootView))
+                .addDragDirection(DragDirection.DOWN, new DragImageToExit(imageView, null, DragDirection.DOWN, rootView, ImagePreview.getInstance().getLocationX(), ImagePreview.getInstance().getLocationY(), ImagePreview.getInstance().getResourceWidth(), ImagePreview.getInstance().getResourceHeight()))
+                .addDragDirection(DragDirection.UP, new DragImageToExit(imageView, null, DragDirection.DOWN, rootView, ImagePreview.getInstance().getLocationX(), ImagePreview.getInstance().getLocationY(), ImagePreview.getInstance().getResourceWidth(), ImagePreview.getInstance().getResourceHeight()))
                 .build();
         mDragLayout = helper.getDragLayout();
         mDragLayout.addView(imageView);
@@ -198,7 +196,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
                     //如果设置了点击退出那么将会直接退出
                     mActivity.finish();
                 } else {
-                    mActivity.onImageViewerClick();
+                    mActivity.onImageViewerClick(position);
                 }
             }
         });
@@ -246,7 +244,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
             Print.d(TAG, "mFinalLoadUrl == " + mFinalLoadUrl);
             final String url = mFinalLoadUrl;
             //真实加载
-            //todo 检查储存权限？
+            //todo 在这里检查储存权限？
             Glide.with(mActivity).downloadOnly().load(url).into(new SimpleTarget<File>() {
                 @Override
                 public void onLoadStarted(@Nullable Drawable placeholder) {
@@ -267,9 +265,9 @@ public class ImagePreviewAdapter extends PagerAdapter {
 
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            //todo 添加失败图片
+                            //todo 检查加载失败图片
                             progressBar.setVisibility(View.GONE);
-                            super.onLoadFailed(errorDrawable);
+                            imageView.setImage(ImageSource.resource(R.drawable.icon_error_face_old));
                         }
 
                         @Override

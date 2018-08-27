@@ -12,10 +12,11 @@ import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.glide.I
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.tool.ToastUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    String[] images = {
+    List<String> images = Arrays.asList(new String[]{
             Environment.getExternalStorageDirectory().getPath() + "/Pictures/Screenshots/Screenshot_2018-03-27-00-27-15.jpg"
             , "http://img3.16fan.com/live/origin/201805/21/E421b24c08446.jpg"
             , "http://img.nga.178.com/attachments/mon_201801/18/-bqqbQ5-d3yyZ1gT3cSg4-3gl.jpg.medium.jpg"
@@ -36,33 +37,21 @@ public class MainActivity extends AppCompatActivity {
 //            "http://img3.16fan.com/live/origin/201805/21/264Ba4860d469.jpg",
 //            "http://img6.16fan.com/attachments/wenzhang/201805/18/152660818716180ge.jpeg", //  2280 * 22116
 //            "http://img6.16fan.com/attachments/wenzhang/201805/18/152660818127263ge.jpeg" //  5760 * 3840
-    };
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ImageInfo imageInfo;
-        final List<ImageInfo> imageInfoList = new ArrayList<>();
-        for (String image : images) {
-            imageInfo = new ImageInfo();
-            imageInfo.setOriginUrl(image);// 原图
-            imageInfo.setThumbnailUrl(
-                    image.concat("-1200"));// 缩略图，实际使用中，根据需求传入缩略图路径。如果没有缩略图url，可以将两项设置为一样，并隐藏查看原图按钮即可。
-            imageInfoList.add(imageInfo);
-            imageInfo = null;
-        }
-
 
 
         findViewById(R.id.buttonOrigin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BigImageViewUtil.showAlbum(MainActivity.this, imageInfoList);
+//                BigImageViewUtil.showAlbum(MainActivity.this, images);
+                BigImageViewUtil.showSingleImage(MainActivity.this, "http://img3.16fan.com/live/origin/201805/21/E421b24c08446.jpg", 100, 100, 100, 100);
             }
         });
-
-
 
 
         findViewById(R.id.buttonClean).setOnClickListener(new View.OnClickListener() {

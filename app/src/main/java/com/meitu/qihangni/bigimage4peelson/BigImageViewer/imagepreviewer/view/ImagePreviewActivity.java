@@ -1,35 +1,21 @@
 package com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.view;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.ImagePreview;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.bean.ImageInfo;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.glide.ImageLoader;
-
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.tool.DownloadPictureUtil;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.tool.HandlerUtils;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.tool.Print;
@@ -60,7 +46,6 @@ public class ImagePreviewActivity extends FragmentActivity implements Handler.Ca
 
     private ImagePreviewAdapter mImagePreviewAdapter;
     private HackyViewPager mViewPager;
-    private TextView tv_indicator;
 
     private String mCurrentItemOriginPathUrl = "";// 当前显示的原图链接
     private HandlerUtils.HandlerHolder mHandlerHolder;
@@ -96,18 +81,6 @@ public class ImagePreviewActivity extends FragmentActivity implements Handler.Ca
         }
 
         mViewPager = findViewById(R.id.viewPager);
-        tv_indicator = findViewById(R.id.tv_indicator);
-
-        if (mImageInfoList.size() > 1) {
-            tv_indicator.setVisibility(View.VISIBLE);
-        } else {
-            tv_indicator.setVisibility(View.GONE);
-        }
-
-        // 更新进度指示器
-        tv_indicator.setText(
-                String.format(getString(R.string.indicator), mCurrentItem + 1 + " ",
-                        " " + mImageInfoList.size()));
 
         mImagePreviewAdapter = new ImagePreviewAdapter(this, mImageInfoList);
         mViewPager.setAdapter(mImagePreviewAdapter);
@@ -123,10 +96,6 @@ public class ImagePreviewActivity extends FragmentActivity implements Handler.Ca
                     // 检查缓存是否存在
                     checkCache(mCurrentItemOriginPathUrl);
                 }
-                // 更新进度指示器
-                tv_indicator.setText(
-                        String.format(getString(R.string.indicator), mCurrentItem + 1 + " ",
-                                " " + mImageInfoList.size()));
             }
         });
     }
@@ -157,12 +126,6 @@ public class ImagePreviewActivity extends FragmentActivity implements Handler.Ca
             final String path = mImageInfoList.get(mCurrentItem).getOriginUrl();
             Print.d(TAG, "handler == 0 path = " + path);
             visible();
-//            Glide.with(mContext).load(path).into(new SimpleTarget<Drawable>() {
-//                @Override
-//                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-//
-//                }
-//            });
         } else if (msg.what == 1) {// 加载完成
             Print.d(TAG, "handler == 1");
             Bundle bundle = (Bundle) msg.obj;
@@ -201,8 +164,11 @@ public class ImagePreviewActivity extends FragmentActivity implements Handler.Ca
         }
     }
 
-    public void onImageViewerClick(){
-
+    /**
+     * 当内部的Imageview截获到单击时调用
+     */
+    public void onImageViewerClick(int position) {
+        //todo 预览点击隐藏和显示的逻辑
     }
 
     @Override
