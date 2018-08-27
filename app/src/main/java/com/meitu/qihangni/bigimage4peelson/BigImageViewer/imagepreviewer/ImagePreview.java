@@ -22,12 +22,14 @@ public class ImagePreview {
     private List<ImageInfo> imageInfoList;// 图片数据集合
     private int index = 0;// 默认显示第几个
     private String folderName = "ImagePreview";// 下载到的文件夹名（根目录中）
-    private float minScale = 1.0f;// 最小缩放倍数
-    private float mediumScale = 3.0f;// 中等缩放倍数
-    private float maxScale = 5.0f;// 最大缩放倍数
+    private float minScale = 1f;// 最小缩放倍数
+    private float mediumScale = 2.0f;// 中等缩放倍数
+    private float maxScale = 5.0f;// 最大缩放倍数;
 
     private boolean isShowDownButton = true;// 是否显示下载按钮
     private int zoomTransitionDuration = 200;// 动画持续时间 单位毫秒 ms
+    private boolean isDragable = false;
+    private boolean isClickToExit = false;
 
     private LoadStrategy loadStrategy = LoadStrategy.Default;// 加载策略
 
@@ -109,15 +111,6 @@ public class ImagePreview {
         }
     }
 
-    /**
-     * 不再有效，是否显示查看原图按钮，取决于加载策略，LoadStrategy，会自行判断是否显示。
-     */
-    @Deprecated
-    public ImagePreview setShowOriginButton(boolean showOriginButton) {
-        //isShowOriginButton = showOriginButton;
-        return this;
-    }
-
     public String getFolderName() {
         if (TextUtils.isEmpty(folderName)) {
             folderName = "BigImageViewDownload";
@@ -130,21 +123,7 @@ public class ImagePreview {
         return this;
     }
 
-    /**
-     * 当前版本不再支持本设置，双击会在最小和中等缩放值之间进行切换，可手动放大到最大。
-     */
-    @Deprecated
-    public ImagePreview setScaleMode(int scaleMode) {
-        //if (scaleMode != MODE_SCALE_TO_MAX_TO_MIN
-        //	&& scaleMode != MODE_SCALE_TO_MEDIUM_TO_MAX_TO_MIN
-        //	&& scaleMode != MODE_SCALE_TO_MEDIUM_TO_MIN) {
-        //	throw new IllegalArgumentException("only can use one of( MODE_SCALE_TO_MAX_TO_MIN、MODE_SCALE_TO_MEDIUM_TO_MAX_TO_MIN、MODE_SCALE_TO_MEDIUM_TO_MIN )");
-        //}
-        //this.scaleMode = scaleMode;
-        return this;
-    }
-
-    public ImagePreview setScaleLevel(int min, int medium, int max) {
+    public ImagePreview setScaleLevel(float min, float medium, float max) {
         if (max > medium && medium > min && min > 0) {
             this.minScale = min;
             this.mediumScale = medium;
@@ -186,6 +165,24 @@ public class ImagePreview {
 
     public LoadStrategy getLoadStrategy() {
         return loadStrategy;
+    }
+
+    public ImagePreview setDragable(boolean isDragable) {
+        this.isDragable = isDragable;
+        return this;
+    }
+
+    public boolean getDragable() {
+        return isDragable;
+    }
+
+    public ImagePreview setClickToExit(boolean isClickToExit) {
+        this.isClickToExit = isClickToExit;
+        return this;
+    }
+
+    public boolean getClickToExit() {
+        return isClickToExit;
     }
 
     public void reset() {

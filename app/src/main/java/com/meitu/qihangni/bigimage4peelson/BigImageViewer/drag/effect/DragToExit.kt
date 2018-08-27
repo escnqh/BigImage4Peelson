@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Context
 import android.graphics.RectF
-import android.util.Log
 import android.view.View
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.drag.*
 
@@ -64,7 +63,7 @@ class DragToExit(private val mView: View, private val mDragActionListener: DragA
 
     private fun cancel() {
         if (mBackgroundView != null) {
-            mBackgroundView.alpha = 1f;
+            mBackgroundView.alpha = 1f
         }
         AnimationHelper.animationRestore(mView, ANIMATOR_DURATION, object : AnimationManager.SimpleAnimatorListener() {
             override fun onAnimationEnd(animation: Animator?) {

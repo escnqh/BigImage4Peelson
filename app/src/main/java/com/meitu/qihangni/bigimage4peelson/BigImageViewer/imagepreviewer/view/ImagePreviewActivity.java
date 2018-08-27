@@ -201,6 +201,10 @@ public class ImagePreviewActivity extends FragmentActivity implements Handler.Ca
         }
     }
 
+    public void onImageViewerClick(){
+
+    }
+
     @Override
     public void onClick(View v) {
         Log.i("nqh", v.toString());

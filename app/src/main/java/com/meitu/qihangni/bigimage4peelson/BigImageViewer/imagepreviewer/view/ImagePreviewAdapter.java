@@ -1,13 +1,12 @@
 package com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.view;
 
-import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,7 @@ import com.meitu.qihangni.bigimage4peelson.BigImageViewer.subscaleview.Subsampli
 import com.meitu.qihangni.bigimage4peelson.R;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,19 +40,20 @@ import java.util.Map;
 public class ImagePreviewAdapter extends PagerAdapter {
 
     private static final String TAG = "ImagePreview";
-    private FragmentActivity mActivity;
+    private ImagePreviewActivity mActivity;
     private List<ImageInfo> mImageInfo;
     private HashMap<String, SubsamplingScaleImageView> mImageHashMap = new HashMap<>();
     private String mFinalLoadUrl = "";// 最终加载的图片url
-    private double mDefaultScale;
     private FrameLayout mDragLayout;
     private boolean isDrag2Exit = false;
     private boolean isClick2Exit = false;
 
-    public ImagePreviewAdapter(FragmentActivity mActivity, @NonNull List<ImageInfo> mImageInfo) {
+    public ImagePreviewAdapter(ImagePreviewActivity mActivity, @NonNull List<ImageInfo> mImageInfo) {
         super();
         this.mImageInfo = mImageInfo;
         this.mActivity = mActivity;
+        isDrag2Exit = ImagePreview.getInstance().getDragable();
+        isClick2Exit = ImagePreview.getInstance().getClickToExit();
     }
 
     public void closePage() {
@@ -127,15 +128,23 @@ public class ImagePreviewAdapter extends PagerAdapter {
         //设置拖拽
         DragHelper helper = new DragHelper.Builder(mActivity)
                 .onlyCreateView()
-                .setCanDrag(true)
+                .setCanDrag(isDrag2Exit)
                 .setDragIntercept(new DragContract.DragIntercept() {
                     @Override
                     public boolean canDrag(@NonNull MotionEvent ev, int direction) {
+                        //因为存在缩放精确值的问题所以这里只保留两位小数来判断图片的缩放状态
+                        DecimalFormat df = new DecimalFormat("0.00");
                         if (direction == DragDirection.DOWN || direction <= DragDirection.UP) {
-                            if (imageView.getCenter() != null && imageView.getCenter().y == imageView.getHeight() / imageView.getScale() / 2) {
+                            if (imageView.getCenter() != null && df.format(imageView.getCenter().y).equals(df.format(imageView.getHeight() / imageView.getScale() / 2))) {
+                                //放大状况下拖拽到上边缘
                                 return true;
                             }
-                            if (imageView.getScale() <= mDefaultScale * 1.01) {
+                            if (imageView.getCenter() != null && df.format(imageView.getSHeight() - imageView.getCenter().y).equals(df.format(imageView.getHeight() / imageView.getScale() / 2))) {
+                                //放大状况下拖拽到下边缘
+                                return true;
+                            }
+                            if (df.format(imageView.getScale()).equals(df.format(imageView.getMinScale()))) {
+                                //判断是否在初始状态
                                 return true;
                             }
                         }
@@ -152,15 +161,10 @@ public class ImagePreviewAdapter extends PagerAdapter {
         imageView.setOnImageEventListener(new SubsamplingScaleImageView.OnImageEventListener() {
             @Override
             public void onReady() {
-                Log.i("nqh", "onReady scale is: " + imageView.getScale());
-                if (mDefaultScale == 0) {
-                    markDefaultScale(imageView.getScale());
-                }
             }
 
             @Override
             public void onImageLoaded() {
-                Log.i("nqh", "onImageLoaded scale is: " + imageView.getScale());
             }
 
             @Override
@@ -192,8 +196,9 @@ public class ImagePreviewAdapter extends PagerAdapter {
                 if (isClick2Exit) {
                     //如果设置了点击退出那么将会直接退出
                     mActivity.finish();
+                } else {
+                    mActivity.onImageViewerClick();
                 }
-                //todo 相册页选中效果
             }
         });
 
@@ -209,20 +214,19 @@ public class ImagePreviewAdapter extends PagerAdapter {
         }
         mImageHashMap.put(originPathUrl, imageView);
 
-//        // 判断原图缓存是否存在，存在的话，直接显示原图缓存，优先保证清晰。
-//        File cacheFile = ImageLoader.getGlideCacheFile(mActivity, originPathUrl);
-//        if (cacheFile != null && cacheFile.exists()) {
-//            String imagePath = cacheFile.getAbsolutePath();
-//            boolean isLongImage = ImageUtil.isLongImage(imagePath);
-//            Print.d(TAG, "isLongImage = " + isLongImage);
-//            if (isLongImage) {
-//                imageView.setOrientation(ImageUtil.getOrientation(imagePath));
-//                imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_START);
-//            }
-//            imageView.setImage(ImageSource.uri(Uri.fromFile(new File(cacheFile.getAbsolutePath()))));
-//            progressBar.setVisibility(View.GONE);
-//        } else {
-
+        // 判断原图缓存是否存在，存在的话，直接显示原图缓存，优先保证清晰。
+        File cacheFile = ImageLoader.getGlideCacheFile(mActivity, originPathUrl);
+        if (cacheFile != null && cacheFile.exists()) {
+            String imagePath = cacheFile.getAbsolutePath();
+            boolean isLongImage = ImageUtil.isLongImage(imagePath);
+            Print.d(TAG, "isLongImage = " + isLongImage);
+            if (isLongImage) {
+                imageView.setOrientation(ImageUtil.getOrientation(imagePath));
+                imageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_START);
+            }
+            imageView.setImage(ImageSource.uri(Uri.fromFile(new File(cacheFile.getAbsolutePath()))));
+            progressBar.setVisibility(View.GONE);
+        } else {
             // 根据当前加载策略判断，需要加载的url是哪一个
             if (loadStrategy == ImagePreview.LoadStrategy.Default) {
                 mFinalLoadUrl = thumbPathUrl;
@@ -240,8 +244,9 @@ public class ImagePreviewAdapter extends PagerAdapter {
             mFinalLoadUrl = mFinalLoadUrl.trim();
             Print.d(TAG, "mFinalLoadUrl == " + mFinalLoadUrl);
             final String url = mFinalLoadUrl;
-
-            Glide.with(mActivity).asFile().load(url).into(new SimpleTarget<File>() {
+            //真实加载
+            //todo 检查储存权限？
+            Glide.with(mActivity).downloadOnly().load(url).into(new SimpleTarget<File>() {
                 @Override
                 public void onLoadStarted(@Nullable Drawable placeholder) {
                     super.onLoadStarted(placeholder);
@@ -293,18 +298,9 @@ public class ImagePreviewAdapter extends PagerAdapter {
                     progressBar.setVisibility(View.GONE);
                 }
             });
-
+        }
         container.addView(convertView);
         return convertView;
-    }
-
-    /**
-     * 记录原始缩放比例
-     *
-     * @param scale 缩放比例
-     */
-    private void markDefaultScale(double scale) {
-        mDefaultScale = scale;
     }
 
     @Override

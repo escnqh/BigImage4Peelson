@@ -806,7 +806,7 @@ public class SubsamplingScaleImageView extends View {
                             scale = Math.min(maxScale, (vDistEnd / vDistStart) * scaleStart);
 
                             if (scale <= minScale()) {
-                                // Minimum scale reached so don't pan. Adjust start settings so any expand will zoom in.
+//                                 Minimum scale reached so don't pan. Adjust start settings so any expand will zoom in.
                                 vDistStart = vDistEnd;
                                 scaleStart = minScale();
                                 vCenterStart.set(vCenterEndX, vCenterEndY);
