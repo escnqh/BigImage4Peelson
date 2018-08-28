@@ -1,9 +1,11 @@
 package com.meitu.qihangni.bigimage4peelson.BigImageViewer;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.ImagePreview;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.bean.ImageInfo;
+import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.view.ImagePreviewActivity;
 import com.meitu.qihangni.bigimage4peelson.R;
 
 import java.util.ArrayList;
@@ -31,20 +33,19 @@ public class BigImageViewUtil {
                 imageUrl.concat("-1200"));
         List<ImageInfo> imageInfoList = new ArrayList<>();
         imageInfoList.add(imageInfo);
-        ImagePreview.getInstance()
-                .setContext(context)
+        ImagePreview imagePreview = new ImagePreview.Builder()
                 .setClickToExit(true)
                 .setDragable(true)
-                .setShowDownButton(false)
                 .setImageInfoList(imageInfoList)
                 .setResourceLocation(locationX, locationY)
                 .setResourceSize(resourceHeight, resourceWidth)
-                .setLoadStrategy(ImagePreview.LoadStrategy.AlwaysOrigin)
                 .setBackgroundColor(R.color.blackbackground)
-                .setFolderName("BigImageViewDownload")
                 .setScaleLevel(1f, 3f, 5f)
                 .setZoomTransitionDuration(300)
-                .start();
+                .build();
+        Intent intent = new Intent(context, ImagePreviewActivity.class);
+        intent.putExtra("ImagePreview", imagePreview);
+        context.startActivity(intent);
     }
 
     /**
@@ -53,7 +54,10 @@ public class BigImageViewUtil {
      * @param context 上下文
      * @param images  源列表
      */
-    public static void showAlbum(Context context, List<String> images) {
+    public static void showAlbum(Context context, List<String> images, int position) {
+        if (position > images.size()) {
+            position = images.size();
+        }
         ImageInfo imageInfo;
         final List<ImageInfo> imageInfoList = new ArrayList<>();
         for (String image : images) {
@@ -64,17 +68,18 @@ public class BigImageViewUtil {
             imageInfoList.add(imageInfo);
             imageInfo = null;
         }
-        ImagePreview.getInstance()
-                .setContext(context)
+        ImagePreview imagePreview = new ImagePreview.Builder()
                 .setClickToExit(false)
+                .setIndex(position)
                 .setDragable(false)
-                .setShowDownButton(false)
                 .setImageInfoList(imageInfoList)
-                .setLoadStrategy(ImagePreview.LoadStrategy.AlwaysOrigin)
                 .setBackgroundColor(R.color.whitebackground)
-                .setFolderName("BigImageViewDownload")
                 .setScaleLevel(1f, 3f, 5f)
                 .setZoomTransitionDuration(300)
-                .start();
+                .build();
+        Intent intent = new Intent(context, ImagePreviewActivity.class);
+        intent.putExtra("ImagePreview", imagePreview);
+        context.startActivity(intent);
+
     }
 }
