@@ -51,7 +51,7 @@ public class ImagePreviewActivity extends FragmentActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+//        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     /**

@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonOrigin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BigImageViewUtil.showAlbum(MainActivity.this, images, 0);
-//                BigImageViewUtil.showSingleImage(MainActivity.this, "http://img3.16fan.com/live/origin/201805/21/E421b24c08446.jpg", 100, 100, 100, 100);
+//                BigImageViewUtil.showAlbum(MainActivity.this, images, 0);
+                BigImageViewUtil.showSingleImage(MainActivity.this, "http://img3.16fan.com/live/origin/201805/21/E421b24c08446.jpg", 100, 100, 100, 100);
             }
         });
 

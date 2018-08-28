@@ -106,7 +106,7 @@ public class DragImageToExit implements DragContract.DragCallback {
     private void close() {
         isClose = true;
         AnimationHelper.animationTarget(mDragView, new RectF(mLocationX, mLocationY, mLocationX + mResourceWidth, mLocationY + mResourceHeight), ANIMATOR_DURATION, new ExitAnimatorListenerAdapter());
-        AnimationHelper.animationAlpha(mDragView, ANIMATOR_DURATION, 0f);
+        AnimationHelper.animationAlpha(mBackgroundView, ANIMATOR_DURATION, 0f);
     }
 
     private class ExitAnimatorListenerAdapter extends AnimatorListenerAdapter {
