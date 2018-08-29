@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.BigImageViewUtil;
-import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.ImagePreview;
-import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.bean.ImageInfo;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.glide.ImageLoader;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.tool.ToastUtil;
 
@@ -48,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonOrigin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                BigImageViewUtil.showAlbum(MainActivity.this, images, 0);
-                BigImageViewUtil.showSingleImage(MainActivity.this, "http://img3.16fan.com/live/origin/201805/21/E421b24c08446.jpg", 100, 100, 100, 100);
+                BigImageViewUtil.showAlbum(MainActivity.this, images, 0);
+//                BigImageViewUtil.showSingleImage(MainActivity.this, "https://img.zcool.cn/community/01247f5991c8d40000002129fce48c.jpg@1280w_1l_2o_100sh.webp", 100, 100, 100, 100);
             }
         });
 

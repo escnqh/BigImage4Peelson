@@ -133,7 +133,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
             public void onClick(View v) {
                 if (isClick2Exit) {
                     //如果设置了点击退出那么将会直接退出
-                    mActivity.finish();
+                    mActivity.checkfinish();
                 } else {
                     mActivity.onImageViewerClick(position);
                 }
@@ -189,6 +189,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
                             //todo 检查加载失败图片
                             progressBar.setVisibility(View.GONE);
                             imageView.setImage(ImageSource.resource(R.drawable.icon_error_face_old));
+                            imageView.setMaxScale(0.5f);
                         }
 
                         @Override

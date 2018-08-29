@@ -40,7 +40,7 @@ public class BigImageViewUtil {
                 .setResourceLocation(locationX, locationY)
                 .setResourceSize(resourceHeight, resourceWidth)
                 .setBackgroundColor(R.color.blackbackground)
-                .setScaleLevel(1f, 3f, 5f)
+                .setScaleLevel(1f, 3f, 20f)
                 .setZoomTransitionDuration(300)
                 .build();
         Intent intent = new Intent(context, ImagePreviewActivity.class);
@@ -74,7 +74,7 @@ public class BigImageViewUtil {
                 .setDragable(false)
                 .setImageInfoList(imageInfoList)
                 .setBackgroundColor(R.color.whitebackground)
-                .setScaleLevel(1f, 3f, 5f)
+                .setScaleLevel(1f, 3f, 20f)
                 .setZoomTransitionDuration(300)
                 .build();
         Intent intent = new Intent(context, ImagePreviewActivity.class);
