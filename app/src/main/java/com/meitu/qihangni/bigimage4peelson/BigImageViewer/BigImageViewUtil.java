@@ -74,7 +74,7 @@ public class BigImageViewUtil {
                 .setDragable(false)
                 .setImageInfoList(imageInfoList)
                 .setBackgroundColor(R.color.whitebackground)
-                .setScaleLevel(1f, 3f, 20f)
+                .setScaleLevel(1f, 3f, 30f)
                 .setZoomTransitionDuration(300)
                 .build();
         Intent intent = new Intent(context, ImagePreviewActivity.class);

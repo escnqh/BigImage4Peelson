@@ -22,7 +22,7 @@ public class ImagePreviewActivity extends FragmentActivity {
     private ImagePreviewAdapter mImagePreviewAdapter;
     private HackyViewPager mViewPager;
     private ImagePreview mImagePreview;
-    private boolean isDragable = true;
+    private boolean isDragable = false;
     private int mLocationX;
     private int mLocationY;
     private int mResourceHeight;
@@ -38,6 +38,7 @@ public class ImagePreviewActivity extends FragmentActivity {
         if (mImagePreview != null) {
             mCurrentItem = mImagePreview.getIndex();
             mLocationX = mImagePreview.getLocationX();
+            isDragable = mImagePreview.getDragable();
             mLocationY = mImagePreview.getLocationY();
             mResourceHeight = mImagePreview.getResourceHeight();
             mResourceWidth = mImagePreview.getResourceWidth();

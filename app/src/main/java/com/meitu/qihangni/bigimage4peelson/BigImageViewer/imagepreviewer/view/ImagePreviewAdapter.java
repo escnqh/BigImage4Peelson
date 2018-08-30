@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
     private boolean isDrag2Exit = false;
     private boolean isClick2Exit = false;
     private ImagePreview mImagePreview;
+    private float mDefaultScale = 0;
 
     public ImagePreviewAdapter(ImagePreviewActivity mActivity, @NonNull ImagePreview imagePreview) {
         super();
@@ -126,7 +128,43 @@ public class ImagePreviewAdapter extends PagerAdapter {
         imageView.setDoubleTapZoomDuration(mImagePreview.getZoomTransitionDuration());
         imageView.setMinScale(mImagePreview.getMinScale());
         imageView.setMaxScale(mImagePreview.getMaxScale());
-        imageView.setDoubleTapZoomScale(mImagePreview.getMediumScale());
+        imageView.setOnImageEventListener(new SubsamplingScaleImageView.OnImageEventListener() {
+            @Override
+            public void onReady() {
+                Log.i("nqh", "onReady");
+                if (mDefaultScale == 0) {
+                    mDefaultScale = imageView.getScale();
+                    imageView.setMinScale(mDefaultScale);
+                    imageView.setMaxScale(mDefaultScale * 3);
+                    imageView.setDoubleTapZoomScale(mDefaultScale * 2);
+                }
+            }
+
+            @Override
+            public void onImageLoaded() {
+                Log.i("nqh", "onImageLoaded");
+            }
+
+            @Override
+            public void onPreviewLoadError(Exception e) {
+
+            }
+
+            @Override
+            public void onImageLoadError(Exception e) {
+
+            }
+
+            @Override
+            public void onTileLoadError(Exception e) {
+
+            }
+
+            @Override
+            public void onPreviewReleased() {
+
+            }
+        });
         //图片范围的点击事件
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,6 +227,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
                             //todo 检查加载失败图片
                             progressBar.setVisibility(View.GONE);
                             imageView.setImage(ImageSource.resource(R.drawable.icon_error_face_old));
+                            mDefaultScale = -1;
                             imageView.setMaxScale(0.5f);
                         }
 
