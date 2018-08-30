@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -39,7 +40,7 @@ import java.util.Map;
  */
 public class ImagePreviewAdapter extends PagerAdapter {
     private static final String TAG = "ImagePreview";
-    private ImagePreviewActivity mActivity;
+    private ImagePreviewFragment mFragment;
     private List<ImageInfo> mImageInfo;
     private HashMap<String, SubsamplingScaleImageView> mImageHashMap = new HashMap<>();
     private String mFinalLoadUrl = "";// 最终加载的图片url
@@ -49,11 +50,11 @@ public class ImagePreviewAdapter extends PagerAdapter {
     private ImagePreview mImagePreview;
     private float mDefaultScale = 0;
 
-    public ImagePreviewAdapter(ImagePreviewActivity mActivity, @NonNull ImagePreview imagePreview) {
+    public ImagePreviewAdapter(ImagePreviewFragment fragment, @NonNull ImagePreview imagePreview) {
         super();
         this.mImagePreview = imagePreview;
         this.mImageInfo = mImagePreview.getImageInfoList();
-        this.mActivity = mActivity;
+        this.mFragment = fragment;
         this.isDrag2Exit = mImagePreview.getDragable();
         this.isClick2Exit = mImagePreview.getClickToExit();
     }
@@ -82,16 +83,16 @@ public class ImagePreviewAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, final int position) {
-        if (mActivity == null) {
+        if (mFragment == null) {
             return container;
         }
-        View convertView = View.inflate(mActivity, R.layout.item_photoview, null);
-        View rootView = mActivity.findViewById(R.id.rootView);
-        rootView.setBackground(mActivity.getResources().getDrawable(mImagePreview.getBackgroundcolor()));
+        View convertView = View.inflate(mFragment.getContext(), R.layout.item_photoview, null);
+        View rootView = mFragment.getView().findViewById(R.id.rootView);
+        rootView.setBackground(mFragment.getResources().getDrawable(mImagePreview.getBackgroundcolor()));
         final ProgressBar progressBar = convertView.findViewById(R.id.progress_view);
-        final SubsamplingScaleImageView imageView = new SubsamplingScaleImageView(mActivity);
+        final SubsamplingScaleImageView imageView = new SubsamplingScaleImageView(mFragment.getContext());
         //设置拖拽
-        DragHelper helper = new DragHelper.Builder(mActivity)
+        DragHelper helper = new DragHelper.Builder(mFragment.getActivity())
                 .onlyCreateView()
                 .setCanDrag(isDrag2Exit)
                 .setDragIntercept(new DragContract.DragIntercept() {
@@ -171,9 +172,9 @@ public class ImagePreviewAdapter extends PagerAdapter {
             public void onClick(View v) {
                 if (isClick2Exit) {
                     //如果设置了点击退出那么将会直接退出
-                    mActivity.checkfinish();
+                    mFragment.checkfinish();
                 } else {
-                    mActivity.onImageViewerClick(position);
+                    mFragment.onImageViewerClick(position);
                 }
             }
         });
@@ -189,7 +190,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
         }
         mImageHashMap.put(originPathUrl, imageView);
         // 判断原图缓存是否存在，存在的话，直接显示原图缓存，优先保证清晰。
-        File cacheFile = ImageLoader.getGlideCacheFile(mActivity, originPathUrl);
+        File cacheFile = ImageLoader.getGlideCacheFile(mFragment.getContext(), originPathUrl);
         if (cacheFile != null && cacheFile.exists()) {
             String imagePath = cacheFile.getAbsolutePath();
             boolean isLongImage = ImageUtil.isLongImage(imagePath);
@@ -204,7 +205,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
             mFinalLoadUrl = mFinalLoadUrl.trim();
             final String url = mFinalLoadUrl;
             //真实加载
-            Glide.with(mActivity).downloadOnly().load(url).into(new SimpleTarget<File>() {
+            Glide.with(mFragment).downloadOnly().load(url).into(new SimpleTarget<File>() {
                 @Override
                 public void onLoadStarted(@Nullable Drawable placeholder) {
                     super.onLoadStarted(placeholder);
@@ -215,7 +216,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
                 public void onLoadFailed(@Nullable Drawable errorDrawable) {
                     super.onLoadFailed(errorDrawable);
                     // glide会有时加载失败，具体看：https://github.com/bumptech/glide/issues/2894
-                    Glide.with(mActivity).asFile().load(url).into(new SimpleTarget<File>() {
+                    Glide.with(mFragment).asFile().load(url).into(new SimpleTarget<File>() {
                         @Override
                         public void onLoadStarted(@Nullable Drawable placeholder) {
                             super.onLoadStarted(placeholder);

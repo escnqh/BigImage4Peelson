@@ -3,20 +3,22 @@ package com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.view;
 import android.animation.Animator;
 import android.graphics.RectF;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.drag.AnimationHelper;
 import com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.ImagePreview;
 import com.meitu.qihangni.bigimage4peelson.R;
 
 /**
- * 预览图片的Activity
- *
- * @author nqh 2018/8/22
+ * @author nqh 2018/8/30
  */
-public class ImagePreviewActivity extends FragmentActivity {
+public class ImagePreviewFragment extends Fragment {
     public static final String TAG = "ImagePreview";
     private int mCurrentItem;// 当前显示的图片索引
     private ImagePreviewAdapter mImagePreviewAdapter;
@@ -29,12 +31,29 @@ public class ImagePreviewActivity extends FragmentActivity {
     private int mResourceWidth;
     private View mRootView;
 
+    public ImagePreviewFragment() {
+    }
+
+    public static ImagePreviewFragment newInstance(ImagePreview imagePreview) {
+        ImagePreviewFragment imagePreviewFragment = new ImagePreviewFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("ImagePreview", imagePreview);
+        imagePreviewFragment.setArguments(args);
+        return imagePreviewFragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            mImagePreview = (ImagePreview) getArguments().getSerializable("ImagePreview");
+        }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preview);
-        mImagePreview = (ImagePreview) getIntent().getSerializableExtra("ImagePreview");
-        //获得一些初始化信息
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.activity_preview, container, false);
         if (mImagePreview != null) {
             mCurrentItem = mImagePreview.getIndex();
             mLocationX = mImagePreview.getLocationX();
@@ -50,8 +69,8 @@ public class ImagePreviewActivity extends FragmentActivity {
             mResourceWidth = 0;
         }
         //ViewPager及其相关配置
-        mViewPager = findViewById(R.id.viewPager);
-        mRootView = findViewById(R.id.rootView);
+        mViewPager = root.findViewById(R.id.viewPager);
+        mRootView = root.findViewById(R.id.rootView);
         mImagePreviewAdapter = new ImagePreviewAdapter(this, mImagePreview);
         mViewPager.setAdapter(mImagePreviewAdapter);
         mViewPager.setCurrentItem(mCurrentItem);
@@ -61,12 +80,14 @@ public class ImagePreviewActivity extends FragmentActivity {
                 mCurrentItem = position;
             }
         });
-
+        return root;
     }
 
-    @Override
-    public void onBackPressed() {
-        checkfinish();
+    /**
+     * 当内部的Imageview截获到单击时调用
+     */
+    public void onImageViewerClick(int position) {
+
     }
 
     public void checkfinish() {
@@ -79,7 +100,7 @@ public class ImagePreviewActivity extends FragmentActivity {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    finish();
+//                    finish();
                 }
 
                 @Override
@@ -91,25 +112,12 @@ public class ImagePreviewActivity extends FragmentActivity {
                 }
             });
         } else {
-            finish();
+//            finish();
         }
     }
 
     @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(0, 0);
-    }
-
-    /**
-     * 当内部的Imageview截获到单击时调用
-     */
-    public void onImageViewerClick(int position) {
-
-    }
-
-    @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (mImagePreviewAdapter != null) {
             mImagePreviewAdapter.closePage();
