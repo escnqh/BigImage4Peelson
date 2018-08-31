@@ -42,26 +42,19 @@ public class ImagePreviewActivity extends FragmentActivity {
             mLocationY = mImagePreview.getLocationY();
             mResourceHeight = mImagePreview.getResourceHeight();
             mResourceWidth = mImagePreview.getResourceWidth();
-        } else {
-            mCurrentItem = 0;
-            mLocationX = 0;
-            mLocationY = 0;
-            mResourceHeight = 0;
-            mResourceWidth = 0;
+            //ViewPager及其相关配置
+            mViewPager = findViewById(R.id.viewPager);
+            mRootView = findViewById(R.id.rootView);
+            mImagePreviewAdapter = new ImagePreviewAdapter(this, mImagePreview);
+            mViewPager.setAdapter(mImagePreviewAdapter);
+            mViewPager.setCurrentItem(mCurrentItem);
+            mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    mCurrentItem = position;
+                }
+            });
         }
-        //ViewPager及其相关配置
-        mViewPager = findViewById(R.id.viewPager);
-        mRootView = findViewById(R.id.rootView);
-        mImagePreviewAdapter = new ImagePreviewAdapter(this, mImagePreview);
-        mViewPager.setAdapter(mImagePreviewAdapter);
-        mViewPager.setCurrentItem(mCurrentItem);
-        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                mCurrentItem = position;
-            }
-        });
-
     }
 
     @Override

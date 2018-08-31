@@ -3,12 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <com.meitu.qihangni.bigimage4peelson.BigImageViewer.subscaleview.SubsamplingScaleImageView
-      android:id="@+id/photo_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      />
-
   <ProgressBar
       android:id="@+id/progress_view"
       android:layout_width="60dp"

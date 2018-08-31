@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     List<String> images = Arrays.asList(new String[]{
-            Environment.getExternalStorageDirectory().getPath() + "/Pictures/Screenshots/Screenshot_2018-03-27-00-27-15.jpg"
+            Environment.getExternalStorageDirectory().getPath() + "/Pictures/Screenshots/2.jpg"
             , "http://img3.16fan.com/live/origin/201805/21/E421b24c08446.jpg"
             , "http://img.nga.178.com/attachments/mon_201801/18/-bqqbQ5-d3yyZ1gT3cSg4-3gl.jpg.medium.jpg"
             , "https://img.zcool.cn/community/01247f5991c8d40000002129fce48c.jpg@1280w_1l_2o_100sh.webp"

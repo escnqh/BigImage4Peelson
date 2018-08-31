@@ -1,11 +1,13 @@
 package com.meitu.qihangni.bigimage4peelson.BigImageViewer.imagepreviewer.view;
 
+import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,8 @@ public class ImagePreviewAdapter extends PagerAdapter {
     private ImagePreviewActivity mActivity;
     private List<ImageInfo> mImageInfo;
     private HashMap<String, SubsamplingScaleImageView> mImageHashMap = new HashMap<>();
+    private final SparseArray<Float> mScaleCache = new SparseArray<>();
+    private final SparseArray<PointF> mPointFCache = new SparseArray<>();
     private String mFinalLoadUrl = "";// 最终加载的图片url
     private FrameLayout mDragLayout;
     private boolean isDrag2Exit = false;
@@ -82,6 +86,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+        Log.i("nqh", "  " + position);
         if (mActivity == null) {
             return container;
         }
@@ -137,32 +142,42 @@ public class ImagePreviewAdapter extends PagerAdapter {
                     imageView.setMinScale(mDefaultScale);
                     imageView.setMaxScale(mDefaultScale * 3);
                     imageView.setDoubleTapZoomScale(mDefaultScale * 2);
+                    mDefaultScale = 0;
+                    if (mScaleCache.get(position) != null && mPointFCache.get(position) != null) {
+                        imageView.setScaleAndCenter(mScaleCache.get(position), mPointFCache.get(position));
+                    }
                 }
             }
 
             @Override
             public void onImageLoaded() {
-                Log.i("nqh", "onImageLoaded");
             }
 
             @Override
             public void onPreviewLoadError(Exception e) {
-
             }
 
             @Override
             public void onImageLoadError(Exception e) {
-
             }
 
             @Override
             public void onTileLoadError(Exception e) {
-
             }
 
             @Override
             public void onPreviewReleased() {
+            }
+        });
+        imageView.setOnStateChangedListener(new SubsamplingScaleImageView.OnStateChangedListener() {
+            @Override
+            public void onScaleChanged(float newScale, int origin) {
+                mScaleCache.put(position, newScale);
+            }
 
+            @Override
+            public void onCenterChanged(PointF newCenter, int origin) {
+                mPointFCache.put(position, newCenter);
             }
         });
         //图片范围的点击事件
